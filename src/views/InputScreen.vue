@@ -2,8 +2,8 @@
   <div>
     <div class="input-group">
       <input
-        id="OriginalIDInput"
-        v-model="originalID"
+        id="original-id-input"
+        v-model="originalId"
         class="form-control"
         type="text"
       />
@@ -12,7 +12,7 @@
           id="pseudonym-generate-btn"
           class="btn btn-outline-primary"
           type="submit"
-          @click.prevent.stop="onGenerate"
+          @click.prevent.stop="onGenerate(originalId)"
         >
           Generate
         </button>
@@ -22,19 +22,36 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import {defineComponent, EmitsOptions, Ref, ref, SetupContext} from 'vue';
+import {submitPseudonymRegistration} from './InputScreenUtil';
 
 export default defineComponent({
   name: 'InputScreen',
-  data: (): {originalID: string} => {
-    return {
-      originalID: ''
+  emits: ['receivedPseudonym'],
+  setup(_props, context: SetupContext<EmitsOptions>) {
+    const originalId: Ref<string> = ref('');
+
+    const onGenerate = (newOrignalId: string) => {
+      submitPseudonymRegistration(newOrignalId)
+        .then(
+          ({
+            pseudonym,
+            isDuplicate
+          }: {
+            pseudonym: string;
+            isDuplicate: boolean;
+          }) => {
+            context.emit('receivedPseudonym', pseudonym, isDuplicate);
+          }
+        )
+        .catch((error) => {
+          console.log(error);
+        });
     };
-  },
-  methods: {
-    onGenerate() {
-      console.log(this.originalID);
-    }
+    return {
+      originalId,
+      onGenerate
+    };
   }
 });
 </script>
