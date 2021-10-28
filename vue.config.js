@@ -16,20 +16,23 @@ const devServer = {
   // In CI mode, Safari cannot contact "localhost", so as a workaround, run the dev server using the jenkins agent pod dns instead.
   host: process.env.JENKINS_AGENT_NAME || 'localhost',
   // Used to proxy a external API server to have someone to talk to during development
-  proxy: process.env.NODE_ENV !== 'development' ? undefined : {
-    '/login': {
-      target: PROXY_TARGET,
-      changeOrigin: true
-    },
-    '/api': {
-      target: PROXY_TARGET,
-      changeOrigin: true
-    },
-    '/logout': {
-      target: PROXY_TARGET,
-      changeOrigin: true
-    }
-  }
+  proxy:
+    process.env.NODE_ENV !== 'development'
+      ? undefined
+      : {
+          '/login': {
+            target: PROXY_TARGET,
+            changeOrigin: true
+          },
+          '/api': {
+            target: PROXY_TARGET,
+            changeOrigin: true
+          },
+          '/logout': {
+            target: PROXY_TARGET,
+            changeOrigin: true
+          }
+        }
 };
 
 let apiDevServerProxyConf = {
@@ -51,7 +54,7 @@ function configureWebpack(config) {
       apiDependency: 'v2',
       includeMenuAndFooter: true,
       runtimeOptions: {
-        language: 'en',
+        language: 'en'
       }
     }),
     new ZipPlugin({
@@ -63,7 +66,6 @@ function configureWebpack(config) {
 const now = new Date();
 const buildDate = now.toUTCString();
 
-
 function chainWebpack(config) {
   const previewText = `package-name: ${appName}
     build-date: ${buildDate}
@@ -71,24 +73,18 @@ function chainWebpack(config) {
     BUILD: ${process.env.BUILD_NUMBER}`;
 
   config.resolve.symlinks(false);
-  config
-    .plugin('html')
-    .tap(args => {
-      args[0].template = htmlTemplate();
-      args[0].version = process.env.NODE_ENV !== 'production' ? previewText : '';
-      return args;
-    });
+  config.plugin('html').tap((args) => {
+    args[0].template = htmlTemplate();
+    args[0].version = process.env.NODE_ENV !== 'production' ? previewText : '';
+    return args;
+  });
 }
 
 function htmlTemplate() {
   if (process.env.NODE_ENV === 'production') {
     return 'apptemplate/app-template.html';
-  }
-  if (process.env.NODE_ENV === 'development') {
+  } else {
     return 'public/index.html';
-  }
-  if (process.env.NODE_ENV === 'test') {
-    return 'public/preview.html';
   }
 }
 
@@ -100,4 +96,3 @@ module.exports = {
   publicPath,
   configureWebpack
 };
-
