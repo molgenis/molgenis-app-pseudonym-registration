@@ -159,11 +159,6 @@ pipeline {
     }
   }
   post {
-    always {
-      container('node') {
-        sh "daemon --name=sauceconnect --stop"
-      }
-    }
     failure {
       molgenisSlack(message: 'Build failed', status:'ERROR', channel: '#pr-app-team')
     }
