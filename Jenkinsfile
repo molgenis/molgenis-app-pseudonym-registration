@@ -44,66 +44,6 @@ pipeline {
         }
       }
     }
-    stage('Build container serving the artifacts [ PR ]') {
-            when {
-                changeRequest()
-            }
-            environment {
-                TAG = "PR-${CHANGE_ID}"
-                DOCKER_CONFIG="/root/.docker"
-            }
-            steps {
-                container('node') {
-                    sh "yarn build"
-                }
-                container (name: 'kaniko', shell: '/busybox/sh') {
-                    sh "#!/busybox/sh\nmkdir -p ${DOCKER_CONFIG}"
-                    sh "#!/busybox/sh\necho '{\"auths\": {\"registry.molgenis.org\": {\"auth\": \"${NEXUS_AUTH}\"}}}' > ${DOCKER_CONFIG}/config.json"
-                    sh "#!/busybox/sh\n/kaniko/executor --context ${WORKSPACE} --destination ${LOCAL_REPOSITORY}:${TAG}"
-                }
-            }
-        }
-    stage('Deploy preview [ PR ]') {
-        when {
-            changeRequest()
-        }
-        environment {
-            TAG = "PR-${CHANGE_ID}"
-            NAME = "preview-pseudonym-registration-${TAG.toLowerCase()}"
-        }
-        steps {
-            container('vault') {
-                sh "mkdir ${JENKINS_AGENT_WORKDIR}/.rancher"
-                sh "vault read -field=value secret/ops/jenkins/rancher/cli2.json > ${JENKINS_AGENT_WORKDIR}/.rancher/cli2.json"
-            }
-            container('rancher') {
-                sh "rancher apps delete ${NAME} || true" 
-                sh "sleep 15s" // wait for deletion
-                sh "rancher apps install " +
-                    "-n ${NAME} " +
-                    "p-vx5vf:molgenis-helm3-molgenis-frontend " +
-                    "${NAME} " +
-                    "--no-prompt " +
-                    "--set environment=dev " +
-                    "--set image.tag=${TAG} " +
-                    "--set image.repository=${env.LOCAL_REGISTRY} " +
-                    "--set proxy.backend.service.targetNamespace=molgenis-abcde " +
-                    "--set proxy.backend.service.targetRelease=master " +
-                    "--set image.pullPolicy=Always " +
-                    "--set readinessPath=/index.html"
-            }
-        }
-        post {
-            success {
-                molgenisSlack(message: "PR Preview available on https://${NAME}.dev.molgenis.org", status:'INFO', channel: '#pr-app-team')
-                container('node') {
-                    sh "set +x; curl -X POST -H 'Content-Type: application/json' -H 'Authorization: token ${GITHUB_TOKEN}' " +
-                        "--data '{\"body\":\":star: PR Preview available on https://${NAME}.dev.molgenis.org\"}' " +
-                        "https://api.github.com/repos/molgenis/molgenis-app-pseudonym-registration/issues/${CHANGE_ID}/comments"
-                }
-            }
-        }
-    }
     stage('Build: [ master ]') {
       when {
         branch 'master'
