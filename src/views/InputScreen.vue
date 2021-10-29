@@ -22,15 +22,20 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, EmitsOptions, Ref, ref, SetupContext} from 'vue';
+import {computed, defineComponent, EmitsOptions, Ref, ref, SetupContext} from 'vue';
 import {submitPseudonymRegistration} from './InputScreenUtil';
 
 export default defineComponent({
   name: 'InputScreen',
   emits: ['receivedPseudonym'],
-  setup(_props, context: SetupContext<EmitsOptions>) {
-    const originalId: Ref<string> = ref('');
-
+  props: {
+    value: {type: String, required: true}
+  },
+  setup(props, context: SetupContext<EmitsOptions>) {
+    const originalId = computed(()=>{
+      get: function () { return props.value},
+      set: (newValue) => context.emit('input', newValue);
+    })
     const onGenerate = (newOrignalId: string) => {
       submitPseudonymRegistration(newOrignalId)
         .then(

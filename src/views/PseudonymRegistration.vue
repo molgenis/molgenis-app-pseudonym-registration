@@ -1,9 +1,13 @@
 <template>
   <div v-if="pseudonym === ''">
-    <InputScreen @receivedPseudonym="setPseudonym" />
+    <InputScreen v-model="originalId" @receivedPseudonym="setPseudonym" />
   </div>
   <div v-else>
-    <ResultScreen :pseudonym="pseudonym" :is-duplicate="isDuplicate" />
+    <ResultScreen
+      :pseudonym="pseudonym"
+      :is-duplicate="isDuplicate"
+      @reset="reset"
+    />
   </div>
 </template>
 
@@ -22,12 +26,25 @@ export default defineComponent({
 function setup() {
   const pseudonym = ref('');
   const isDuplicate = ref(false);
+  const originalId = ref('');
 
   return {
     isDuplicate,
     pseudonym,
-    setPseudonym: _.partial(setPseudonym, pseudonym, isDuplicate)
+    originalId,
+    setPseudonym: _.partial(setPseudonym, pseudonym, isDuplicate),
+    reset: _.partial(reset, pseudonym, isDuplicate, originalId)
   };
+}
+
+function reset(
+  pseudonym: Ref<string>,
+  isDuplicate: Ref<boolean>,
+  originalId: Ref<string>
+) {
+  pseudonym.value = '';
+  isDuplicate.value = false;
+  originalId.value = '';
 }
 
 function setPseudonym(

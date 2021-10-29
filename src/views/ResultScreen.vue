@@ -1,8 +1,11 @@
 <template>
-  <div>{{ pseudonym }}</div>
-  <div v-if="isDuplicate" class="alert">
-    This pseudonym already existed in the database, you might want to check if
-    the patients data was already entered.
+  <div>
+    <div>{{ pseudonym }}</div>
+    <div v-if="isDuplicate" class="alert">
+      This pseudonym already existed in the database, you might want to check if
+      the patients data was already entered.
+    </div>
+    <button class="btn btn-primary" @click="$emit('reset')">Back</button>
   </div>
 </template>
 
@@ -11,10 +14,10 @@ import {defineComponent} from 'vue';
 
 export default defineComponent({
   name: 'ResultScreen',
+  emits: ['reset'],
   props: {
     pseudonym: {type: String, required: true},
     isDuplicate: {type: Boolean, required: false}
-  },
-  emits: []
+  }
 });
 </script>
