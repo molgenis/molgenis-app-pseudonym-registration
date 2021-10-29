@@ -63,8 +63,8 @@ const checkForDuplicateId = async (
     .get(`/api/data/PseudonymRegistration?q=OriginalId==${originalId}`)
     .then(
       (response: ApiResponse): void => {
-        pseudonym = response.items[0].data.id;
-        if (pseudonym !== '') {
+        if (response.items.length) {
+          pseudonym = response.items[0].data.id;
           isDuplicate = true;
         } else {
           throw new Error(`Please contact a system administrator`);

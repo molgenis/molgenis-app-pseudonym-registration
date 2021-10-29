@@ -3,7 +3,7 @@
     <div class="input-group">
       <input
         id="original-id-input"
-        v-model="originalId"
+        v-model="localOriginalId"
         class="form-control"
         type="text"
       />
@@ -22,41 +22,55 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, EmitsOptions, Ref, ref, SetupContext} from 'vue';
+import {computed, defineComponent, EmitsOptions, SetupContext} from 'vue';
 import {submitPseudonymRegistration} from './InputScreenUtil';
 
 export default defineComponent({
   name: 'InputScreen',
-  emits: ['receivedPseudonym'],
   props: {
-    value: {type: String, required: true}
+    originalId: {type: String, required: true}
   },
+  emits: ['receivedPseudonym', 'update:orignalId'],
   setup(props, context: SetupContext<EmitsOptions>) {
-    const originalId = computed(()=>{
-      get: function () { return props.value},
-      set: (newValue) => context.emit('input', newValue);
-    })
-    const onGenerate = (newOrignalId: string) => {
-      submitPseudonymRegistration(newOrignalId)
-        .then(
-          ({
-            pseudonym,
-            isDuplicate
-          }: {
-            pseudonym: string;
-            isDuplicate: boolean;
-          }) => {
-            context.emit('receivedPseudonym', pseudonym, isDuplicate);
-          }
-        )
-        .catch((error) => {
-          console.log(error);
-        });
-    };
+    const localOriginalId = createLocalOriginalId(props, context);
+    const onGenerate = createOnGenerate(context);
+
     return {
-      originalId,
+      localOriginalId,
       onGenerate
     };
   }
 });
+
+function createLocalOriginalId(
+  props: any, // can't input originalId as a string because we want it by reference
+  context: SetupContext<EmitsOptions>
+) {
+  return computed({
+    get: (): string => props.originalId,
+    set: (newValue): void => {
+      context.emit('update:orignalId', newValue);
+    }
+  });
+}
+
+function createOnGenerate(
+  context: SetupContext<EmitsOptions>
+): (newOrignalId: string) => void {
+  return (newOrignalId: string) => {
+    submitPseudonymRegistration(newOrignalId)
+      .then(
+        ({
+          pseudonym,
+          isDuplicate
+        }: {
+          pseudonym: string;
+          isDuplicate: boolean;
+        }): void => {
+          context.emit('receivedPseudonym', pseudonym, isDuplicate);
+        }
+      )
+      .catch((error): void => console.log(error)); // TODO properly display errors
+  };
+}
 </script>
