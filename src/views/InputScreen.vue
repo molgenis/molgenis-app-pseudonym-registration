@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="input-group">
+    <p>
+      Enter the UMCG number to generate a pseudonym ... (please provide a nice
+      text to explain what can be done here)
+    </p>
+    <div class="input-group card-text">
       <input
         id="original-id-input"
         v-model="localOriginalId"

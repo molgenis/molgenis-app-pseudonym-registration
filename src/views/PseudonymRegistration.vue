@@ -1,17 +1,22 @@
 <template>
-  <div v-if="pseudonym === ''">
-    <InputScreen
-      v-model:originalId="originalId"
-      @receivedPseudonym="setPseudonym"
-      @update:orignalId="updateOriginalId"
-    />
-  </div>
-  <div v-else>
-    <ResultScreen
-      :pseudonym="pseudonym"
-      :is-duplicate="isDuplicate"
-      @reset="reset"
-    />
+  <div class="card">
+    <div class="card-header">Pseudonym Registration</div>
+    <div class="card-body">
+      <div v-if="pseudonym === ''">
+        <InputScreen
+          v-model:originalId="originalId"
+          @receivedPseudonym="setPseudonym"
+          @update:orignalId="updateOriginalId"
+        />
+      </div>
+      <div v-else>
+        <ResultScreen
+          :pseudonym="pseudonym"
+          :is-duplicate="isDuplicate"
+          @reset="reset"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
