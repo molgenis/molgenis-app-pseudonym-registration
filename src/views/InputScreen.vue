@@ -48,7 +48,7 @@ function createLocalOriginalId(
 ) {
   return computed({
     get: (): string => props.originalId,
-    set: (newValue): void => {
+    set: (newValue: string): void => {
       context.emit('update:orignalId', newValue);
     }
   });
