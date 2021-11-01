@@ -11,26 +11,28 @@ export const submitPseudonymRegistration = async (
   const postOptions = {body: JSON.stringify({OriginalId: originalId})};
 
   try {
-    await api.post(`/api/data/PseudonymRegistration`, postOptions).then(
-      async (response: ApiResponse) => {
-        if (response.status === 201) {
-          pseudonym = await getNewPseudonym(originalId);
-        } else {
-          throw new Error(`Unexpected status code ${response.status}`);
+    await api
+      .post(`/api/data/PseudoId_PseudonymRegistration`, postOptions)
+      .then(
+        async (response: ApiResponse) => {
+          if (response.status === 201) {
+            pseudonym = await getNewPseudonym(originalId);
+          } else {
+            throw new Error(`Unexpected status code ${response.status}`);
+          }
+        },
+        async (error: Response) => {
+          if (error.status === 400) {
+            const result = await checkForDuplicateId(originalId);
+            pseudonym = result.pseudonym;
+            isDuplicate = result.isDuplicate;
+          } else {
+            throw new Error(
+              `${error.statusText} Please contact a system administrator`
+            );
+          }
         }
-      },
-      async (error: Response) => {
-        if (error.status === 400) {
-          const result = await checkForDuplicateId(originalId);
-          pseudonym = result.pseudonym;
-          isDuplicate = result.isDuplicate;
-        } else {
-          throw new Error(
-            `${error.statusText} Please contact a system administrator`
-          );
-        }
-      }
-    );
+      );
   } catch (error: any) {
     await Promise.reject(error.toString());
   }
@@ -40,7 +42,7 @@ export const submitPseudonymRegistration = async (
 const getNewPseudonym = async (originalId: string): Promise<string> => {
   let newPseudonym = '';
   await api
-    .get(`/api/data/PseudonymRegistration?q=OriginalId==${originalId}`)
+    .get(`/api/data/PseudoId_PseudonymRegistration?q=OriginalId==${originalId}`)
     .then(
       (response: ApiResponse) => {
         newPseudonym = response.items[0].data.id;
@@ -60,7 +62,7 @@ const checkForDuplicateId = async (
   let isDuplicate = false;
   let pseudonym = '';
   await api
-    .get(`/api/data/PseudonymRegistration?q=OriginalId==${originalId}`)
+    .get(`/api/data/PseudoId_PseudonymRegistration?q=OriginalId==${originalId}`)
     .then(
       (response: ApiResponse): void => {
         if (response.items.length) {
