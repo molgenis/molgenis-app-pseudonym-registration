@@ -6,8 +6,14 @@
       "GEN-123456" when the next molgenis version is released )
     </p>
     <div>
-      <div>{{ pseudonym }}</div>
-      <div>
+      <div class="input-group mb-3">
+        <input
+          id="pseudonym"
+          :value="pseudonym"
+          type="text"
+          class="form-control"
+          :disabled="true"
+        />
         <button
           id="clipboard-btn"
           class="btn btn-outline-secondary"

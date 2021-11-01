@@ -16,6 +16,7 @@
           id="pseudonym-generate-btn"
           class="btn btn-outline-primary"
           type="submit"
+          :disabled="localOriginalId === ''"
           @click.prevent.stop="onGenerate(originalId)"
         >
           Generate
