@@ -1,8 +1,6 @@
 // @ts-ignore
 import api from '@molgenis/molgenis-api-client';
 
-type ApiResponse = Response & {items: {data: {id: string}}[]};
-
 export const submitPseudonymRegistration = async (
   originalId: string
 ): Promise<{pseudonym: string; isDuplicate: boolean}> => {
@@ -80,3 +78,5 @@ const checkForDuplicateId = async (
     );
   return {pseudonym, isDuplicate};
 };
+
+type ApiResponse = Response & {items: {data: {id: string}}[]};
