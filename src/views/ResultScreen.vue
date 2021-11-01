@@ -5,14 +5,9 @@
       what to do with the pseudonym, note that the generated id can look like
       "GEN-123456" when the next molgenis version is released )
     </p>
-    <div class="input-group mb-3">
-      <input
-        id="pseudonym"
-        :value="pseudonym"
-        type="text"
-        class="form-control"
-      />
-      <div class="input-group-append">
+    <div>
+      <div>{{ pseudonym }}</div>
+      <div>
         <button
           id="clipboard-btn"
           class="btn btn-outline-secondary"

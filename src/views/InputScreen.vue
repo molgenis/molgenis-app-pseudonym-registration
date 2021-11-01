@@ -22,11 +22,21 @@
         </button>
       </div>
     </div>
+    <div v-if="errorText !== ''" class="alert alert-warning" role="alert">
+      {{ errorText }}
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, EmitsOptions, SetupContext} from 'vue';
+import {
+  computed,
+  defineComponent,
+  EmitsOptions,
+  Ref,
+  ref,
+  SetupContext
+} from 'vue';
 import {submitPseudonymRegistration} from './InputScreenUtil';
 
 export default defineComponent({
@@ -36,10 +46,12 @@ export default defineComponent({
   },
   emits: ['receivedPseudonym', 'update:orignalId'],
   setup(props, context: SetupContext<EmitsOptions>) {
+    const errorText = ref('');
     const localOriginalId = createLocalOriginalId(props, context);
-    const onGenerate = createOnGenerate(context);
+    const onGenerate = createOnGenerate(context, errorText);
 
     return {
+      errorText,
       localOriginalId,
       onGenerate
     };
@@ -59,7 +71,8 @@ function createLocalOriginalId(
 }
 
 function createOnGenerate(
-  context: SetupContext<EmitsOptions>
+  context: SetupContext<EmitsOptions>,
+  errorText: Ref<string>
 ): (newOrignalId: string) => void {
   return (newOrignalId: string) => {
     submitPseudonymRegistration(newOrignalId)
@@ -74,7 +87,7 @@ function createOnGenerate(
           context.emit('receivedPseudonym', pseudonym, isDuplicate);
         }
       )
-      .catch((error): void => console.log(error)); // TODO properly display errors
+      .catch((error): void => (errorText.value = error));
   };
 }
 </script>

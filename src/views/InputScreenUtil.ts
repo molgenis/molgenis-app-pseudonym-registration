@@ -28,7 +28,7 @@ export const submitPseudonymRegistration = async (
             isDuplicate = result.isDuplicate;
           } else {
             throw new Error(
-              `${error.statusText} Please contact a system administrator`
+              `${error.statusText} (statuscode: ${error.status}). Please contact a system administrator`
             );
           }
         }
@@ -49,7 +49,7 @@ const getNewPseudonym = async (originalId: string): Promise<string> => {
       },
       (error: ApiResponse) => {
         throw new Error(
-          `${error.statusText} Please contact a system administrator`
+          `${error.statusText} (statuscode: ${error.status}). Please contact a system administrator`
         );
       }
     );
@@ -74,7 +74,7 @@ const checkForDuplicateId = async (
       },
       (error: ApiResponse): void => {
         throw new Error(
-          `${error.statusText} Please contact a system administrator`
+          `${error.statusText} (statuscode: ${error.status}). Please contact a system administrator`
         );
       }
     );
