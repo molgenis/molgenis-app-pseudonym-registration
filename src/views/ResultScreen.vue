@@ -34,26 +34,31 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
-
-export default defineComponent({
+export default {
   name: 'ResultScreen',
   props: {
     pseudonym: {type: String, required: true},
     isDuplicate: {type: Boolean, required: false}
   },
-  emits: ['reset'],
-  data() {
+  data: (): {isOnClipboard: boolean} => {
     return {
       isOnClipboard: false
     };
   },
   methods: {
-    sendToClipboard(value: string) {
-      navigator.clipboard.writeText(value).then(() => {
-        this.isOnClipboard = true;
-      });
+    sendToClipboard(): void {
+      createSendToClipboard(this);
     }
   }
-});
+};
+
+function createSendToClipboard(
+  component: any & {isOnClipboard: boolean}
+): (pseudonym: string) => void {
+  return (pseudonym: string): void => {
+    navigator.clipboard.writeText(pseudonym).then(() => {
+      component.isOnClipboard = true;
+    });
+  };
+}
 </script>

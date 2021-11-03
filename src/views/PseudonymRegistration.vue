@@ -4,7 +4,7 @@
     <div class="card-body">
       <div v-if="pseudonym === ''">
         <InputScreen
-          v-model:originalId="originalId"
+          :originalId="originalId"
           @receivedPseudonym="setPseudonym"
           @update:orignalId="updateOriginalId"
         />
@@ -21,58 +21,36 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, Ref} from 'vue';
 import InputScreen from './InputScreen.vue';
 import ResultScreen from './ResultScreen.vue';
 
-export default defineComponent({
+export default {
   name: 'PseudonymRegistration',
   components: {InputScreen, ResultScreen},
-  setup
-});
-
-function setup() {
-  const pseudonym = ref('');
-  const isDuplicate = ref(false);
-  const originalId = ref('');
-
-  return {
-    isDuplicate,
-    pseudonym,
-    originalId,
-    setPseudonym: createSetPseudonym(pseudonym, isDuplicate),
-    reset: createReset(pseudonym, isDuplicate, originalId),
-    updateOriginalId: createUpdateOriginalId(originalId)
-  };
-}
-
-function createReset(
-  pseudonym: Ref<string>,
-  isDuplicate: Ref<boolean>,
-  originalId: Ref<string>
-): () => void {
-  return (): void => {
-    pseudonym.value = '';
-    isDuplicate.value = false;
-    originalId.value = '';
-  };
-}
-
-function createSetPseudonym(
-  pseudonym: Ref<string>,
-  isDuplicate: Ref<boolean>
-): (newPseudonym: string, newIsDuplicate: boolean) => void {
-  return (newPseudonym: string, newIsDuplicate: boolean): void => {
-    pseudonym.value = newPseudonym;
-    isDuplicate.value = newIsDuplicate;
-  };
-}
-
-function createUpdateOriginalId(
-  originalId: Ref<string>
-): (newId: string) => void {
-  return (newId: string) => {
-    originalId.value = newId;
-  };
-}
+  data(): {
+    pseudonym: string;
+    isDuplicate: boolean;
+    originalId: string;
+  } {
+    return {
+      pseudonym: '',
+      isDuplicate: false,
+      originalId: 'test'
+    };
+  },
+  methods: {
+    reset(): void {
+      this.pseudonym = '';
+      this.isDuplicate = false;
+      this.originalId = 'test';
+    },
+    setPseudonym(newPseudonym: string, newIsDuplicate: boolean): void {
+      this.pseudonym = newPseudonym;
+      this.isDuplicate = newIsDuplicate;
+    },
+    updateOriginalId(newId: string): void {
+      this.originalId = newId;
+    }
+  }
+};
 </script>
