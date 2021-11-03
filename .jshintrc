@@ -93,6 +93,11 @@
     "define": false,
     "require": false,
     "module": true,
-    "done": true
+    "done": true,
+    "describe":true,
+    "it":true,
+    "expect":true,
+    "beforeEach":true,
+    "afterEach":true
   } // additional predefined global variables
 }

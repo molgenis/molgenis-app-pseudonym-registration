@@ -2,9 +2,9 @@
 import api from '@molgenis/molgenis-api-client';
 import IPseudonymResult from './IPseudonymResult';
 
-export const submitPseudonymRegistration = async (
+export async function submitPseudonymRegistration(
   originalId: string
-): Promise<IPseudonymResult> => {
+): Promise<IPseudonymResult> {
   let pseudonym = '';
   let isDuplicate = false;
 
@@ -20,9 +20,9 @@ export const submitPseudonymRegistration = async (
   }
 
   return {pseudonym, isDuplicate};
-};
+}
 
-const createPseudonym = async (originalId: string) => {
+async function createPseudonym(originalId: string) {
   const postOptions = {body: JSON.stringify({OriginalId: originalId})};
   return await api
     .post(`/api/data/PseudoId_PseudonymRegistration`, postOptions)
@@ -35,9 +35,9 @@ const createPseudonym = async (originalId: string) => {
         );
       }
     });
-};
+}
 
-const getPseudonym = async (originalId: string): Promise<string> => {
+async function getPseudonym(originalId: string): Promise<string> {
   return await api
     .get(`/api/data/PseudoId_PseudonymRegistration?q=OriginalId==${originalId}`)
     .then(
@@ -50,6 +50,6 @@ const getPseudonym = async (originalId: string): Promise<string> => {
         );
       }
     );
-};
+}
 
 type ApiResponse = Response & {items: {data: {id: string}}[]};

@@ -56,7 +56,9 @@ export default Vue.extend({
         .then(({pseudonym, isDuplicate}: IPseudonymResult): void => {
           this.$emit('receivedPseudonym', pseudonym, isDuplicate);
         })
-        .catch((error): void => (this.errorText = error));
+        .catch((error: string): void => {
+          this.errorText = error;
+        });
     }
   }
 });

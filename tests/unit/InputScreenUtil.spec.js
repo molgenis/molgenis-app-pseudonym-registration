@@ -1,14 +1,11 @@
-import {submitPseudonymRegistration} from './../../src/views/InputScreenUtil';
-import td from 'testdouble';
-// @ts-ignore
-// import api from '@molgenis/molgenis-api-client';
+const td = require('testdouble');
+const inputScreenUtil = require('@/views/InputScreenUtil');
+const api = require('@molgenis/molgenis-api-client');
 
 describe('InputScreenUtil', () => {
   describe('submitPseudonymRegistration', () => {
     beforeEach(() => {
-      // td.reset();
-      // const get = td.function('api.get');
-      // const post = td.function('api.post');
+      td.reset();
     });
 
     const originalId = 'theOriginalIdentifier';
@@ -25,9 +22,9 @@ describe('InputScreenUtil', () => {
       td.when(
         get(`/api/data/PseudonymRegistration?q=OriginalId==${originalId}`)
       ).thenResolve({items: [{data: {id: newPseudonym}}]});
-      // td.replace(api, 'get', get);
-      // td.replace(api, 'post', post);
-      submitPseudonymRegistration(originalId).then((result) => {
+      td.replace(api, 'get', get);
+      td.replace(api, 'post', post);
+      inputScreenUtil.submitPseudonymRegistration(originalId).then((result) => {
         expect(result).toEqual('newPseudonymId');
         done();
       });
