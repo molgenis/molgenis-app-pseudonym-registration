@@ -21,10 +21,11 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import InputScreen from './InputScreen.vue';
 import ResultScreen from './ResultScreen.vue';
 
-export default {
+export default Vue.extend({
   name: 'PseudonymRegistration',
   components: {InputScreen, ResultScreen},
   data(): {
@@ -52,5 +53,5 @@ export default {
       this.originalId = newId;
     }
   }
-};
+});
 </script>

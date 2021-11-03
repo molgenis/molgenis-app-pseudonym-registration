@@ -1,9 +1,10 @@
 // @ts-ignore
 import api from '@molgenis/molgenis-api-client';
+import IPseudonymResult from './IPseudonymResult';
 
 export const submitPseudonymRegistration = async (
   originalId: string
-): Promise<{pseudonym: string; isDuplicate: boolean}> => {
+): Promise<IPseudonymResult> => {
   let pseudonym = '';
   let isDuplicate = false;
 

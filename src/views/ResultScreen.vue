@@ -34,7 +34,9 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue';
+
+export default Vue.extend({
   name: 'ResultScreen',
   props: {
     pseudonym: {type: String, required: true},
@@ -46,19 +48,11 @@ export default {
     };
   },
   methods: {
-    sendToClipboard(): void {
-      createSendToClipboard(this);
+    sendToClipboard(pseudonym: string): void {
+      navigator.clipboard.writeText(pseudonym).then(() => {
+        this.isOnClipboard = true;
+      });
     }
   }
-};
-
-function createSendToClipboard(
-  component: any & {isOnClipboard: boolean}
-): (pseudonym: string) => void {
-  return (pseudonym: string): void => {
-    navigator.clipboard.writeText(pseudonym).then(() => {
-      component.isOnClipboard = true;
-    });
-  };
-}
+});
 </script>

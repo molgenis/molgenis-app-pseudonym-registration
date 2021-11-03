@@ -8,7 +8,7 @@
       <input
         id="original-id-input"
         v-bind:value="localOriginalId"
-        v-on:input="onInputCange"
+        v-on:input="onInputChange"
         class="form-control"
         type="text"
       />
@@ -18,7 +18,7 @@
           class="btn btn-outline-primary"
           type="submit"
           :disabled="localOriginalId === ''"
-          @click.prevent.stop="onGenerate(originalId)"
+          v-on:click="onGenerate(originalId)"
         >
           Generate
         </button>
@@ -31,9 +31,11 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import {submitPseudonymRegistration} from './InputScreenUtil';
+import IPseudonymResult from './IPseudonymResult';
 
-export default {
+export default Vue.extend({
   name: 'InputScreen',
   props: {
     originalId: {type: String, required: true}
@@ -46,23 +48,16 @@ export default {
   },
   methods: {
     onInputChange(event: any): void {
+      this.localOriginalId = event?.target?.value;
       this.$emit('update:orignalId', event?.target?.value);
     },
-    onGenerate(newOrignalId: string) {
+    onGenerate(newOrignalId: string): void {
       submitPseudonymRegistration(newOrignalId)
-        .then(
-          ({
-            pseudonym,
-            isDuplicate
-          }: {
-            pseudonym: string;
-            isDuplicate: boolean;
-          }): void => {
-            this.$emit('receivedPseudonym', pseudonym, isDuplicate);
-          }
-        )
+        .then(({pseudonym, isDuplicate}: IPseudonymResult): void => {
+          this.$emit('receivedPseudonym', pseudonym, isDuplicate);
+        })
         .catch((error): void => (this.errorText = error));
     }
   }
-};
+});
 </script>
