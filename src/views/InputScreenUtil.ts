@@ -10,37 +10,33 @@ const INFORM_MESSAGE =
 export async function submitPseudonymRegistration(
   originalId: string
 ): Promise<IPseudonymResult> {
-  let pseudonym = '';
-  let isDuplicate = false;
-
-  try {
-    pseudonym = await getPseudonym(originalId);
-    isDuplicate = Boolean(pseudonym);
-
-    if (!isDuplicate) {
-      pseudonym = await createPseudonym(originalId);
-    }
-  } catch (error) {
-    //@ts-ignore
-    await Promise.reject(error.toString());
-  }
-
-  return {pseudonym, isDuplicate};
+  return getPseudonym(originalId)
+    .then(async (pseudonym: string) => {
+      const isDuplicate = Boolean(pseudonym);
+      if (isDuplicate) {
+        return {
+          pseudonym,
+          isDuplicate
+        };
+      } else {
+        return {
+          pseudonym: await createPseudonym(originalId),
+          isDuplicate
+        };
+      }
+    })
+    .catch((error) => {
+      return Promise.reject(Object(error).toString());
+    });
 }
 
 async function getPseudonym(originalId: string): Promise<string> {
   return await api
     .get(`/api/data/PseudoId_PseudonymRegistration?q=OriginalId==${originalId}`)
-    .then(
-      (response: ApiResponse) => {
-        return response.items.length ? response.items[0].data.id : '';
-      },
-      (error: ApiResponse) => {
-        throw new Error(
-          `${error.statusText} (statuscode: ${error.status}). ${INFORM_MESSAGE}`
-        );
-      }
-    );
+    .then((response: ApiResponse) => {
+      return response.items.length ? response.items[0].data.id : '';
+    })
+    .catch(errorHandler);
 }
 
 async function createPseudonym(originalId: string) {
@@ -51,9 +47,24 @@ async function createPseudonym(originalId: string) {
       if (response.status === 201) {
         return await getPseudonym(originalId);
       } else {
-        throw new Error(
-          `Could not create pseudonym. Unexpected status code ${response.status}. ${INFORM_MESSAGE}`
-        );
+        return Promise.reject(response);
       }
-    });
+    })
+    .catch(errorHandler);
+}
+
+function errorHandler(error: ApiResponse | string): void {
+  if (isApiResponse(error)) {
+    throw new Error(
+      `${error.statusText} (statuscode: ${error.status}). ${INFORM_MESSAGE}`
+    );
+  } else {
+    throw error;
+  }
+}
+
+function isApiResponse(
+  response: ApiResponse | string
+): response is ApiResponse {
+  return (<ApiResponse>response).status !== undefined;
 }

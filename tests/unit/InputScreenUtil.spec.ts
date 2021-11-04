@@ -22,6 +22,11 @@ describe('InputScreenUtil', () => {
     const newPseudonym = 'newPseudonymId';
     const INFORM_MESSAGE =
       'If you think this is a bug, please inform us at https://github.com/molgenis/molgenis-app-pseudonym-registration/issues';
+    const errorResponse = {
+      statusText: 'reason for error',
+      status: 400
+    };
+    const failedToGetError = `Error: reason for error (statuscode: 400). ${INFORM_MESSAGE}`;
 
     it('should create a new pseudonym and return it', (done) => {
       api.get
@@ -46,7 +51,7 @@ describe('InputScreenUtil', () => {
         isDuplicate: true,
         pseudonym: newPseudonym
       };
-      submitPseudonymRegistration(originalId).catch(
+      submitPseudonymRegistration(originalId).then(
         (result: IPseudonymResult) => {
           expect(result).toEqual(expectedResult);
           done();
@@ -55,14 +60,53 @@ describe('InputScreenUtil', () => {
     });
 
     it('should return an error the api fails to get', (done) => {
-      api.get.mockRejectedValueOnce({
+      api.get.mockRejectedValueOnce(errorResponse);
+      submitPseudonymRegistration(originalId).catch(
+        (error: IPseudonymResult) => {
+          expect(error).toEqual(failedToGetError);
+          done();
+        }
+      );
+    });
+
+    it('should return an error the api fails process the post', (done) => {
+      api.get.mockResolvedValueOnce(getEmptyResponse);
+      api.post.mockRejectedValueOnce({
         statusText: 'reason for error',
-        status: 400
+        status: 401
       });
-      const expectedError = `Error: reason for error (statuscode: 400). ${INFORM_MESSAGE}`;
+      const expectedError = `Error: reason for error (statuscode: 401). ${INFORM_MESSAGE}`;
       submitPseudonymRegistration(originalId).catch(
         (error: IPseudonymResult) => {
           expect(error).toEqual(expectedError);
+          done();
+        }
+      );
+    });
+
+    it('should return an error if the api returns a non-error code that is not 201', (done) => {
+      api.get.mockResolvedValueOnce(getEmptyResponse);
+      const unexpectedPostResponse = {
+        status: 200,
+        statusText: 'Ok'
+      } as Response;
+      api.post.mockResolvedValueOnce(unexpectedPostResponse);
+      const expectedError = `Error: Ok (statuscode: 200). ${INFORM_MESSAGE}`;
+      submitPseudonymRegistration(originalId).catch(
+        (error: IPseudonymResult) => {
+          expect(error).toEqual(expectedError);
+          done();
+        }
+      );
+    });
+
+    it('should return an error if it fails to retrieve the just created pseudonym', (done) => {
+      api.get.mockResolvedValueOnce(getEmptyResponse);
+      api.post.mockResolvedValueOnce(postResponse);
+      api.get.mockRejectedValueOnce(errorResponse);
+      submitPseudonymRegistration(originalId).catch(
+        (error: IPseudonymResult) => {
+          expect(error).toEqual(failedToGetError);
           done();
         }
       );
