@@ -15,7 +15,8 @@ export async function submitPseudonymRegistration(
     if (!isDuplicate) {
       pseudonym = await createPseudonym(originalId);
     }
-  } catch (error: any) {
+  } catch (error) {
+    //@ts-ignore
     await Promise.reject(error.toString());
   }
 
