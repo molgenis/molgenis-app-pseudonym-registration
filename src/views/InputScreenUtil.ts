@@ -2,6 +2,8 @@
 import api from '@molgenis/molgenis-api-client';
 import IPseudonymResult from './IPseudonymResult';
 
+type ApiResponse = Response & {items: {data: {id: string}}[]};
+
 export async function submitPseudonymRegistration(
   originalId: string
 ): Promise<IPseudonymResult> {
@@ -52,5 +54,3 @@ async function getPseudonym(originalId: string): Promise<string> {
       }
     );
 }
-
-type ApiResponse = Response & {items: {data: {id: string}}[]};
