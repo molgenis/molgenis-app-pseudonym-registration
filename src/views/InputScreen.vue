@@ -1,9 +1,6 @@
 <template>
   <div id="input-screen">
-    <p>
-      Enter the UMCG number to generate a pseudonym ... ( please provide a nice
-      text to explain what can be done here )
-    </p>
+    <p>Enter the original id to generate a pseudonym.</p>
     <div class="input-group card-text">
       <input
         id="original-id-input"

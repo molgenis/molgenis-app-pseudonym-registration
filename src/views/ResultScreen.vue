@@ -1,10 +1,6 @@
 <template>
   <div id="result-screen">
-    <p>
-      Please use this pseudonym to ... ( please provide a nice text to explain
-      what to do with the pseudonym, note that the generated id can look like
-      "GEN-123456" when the next molgenis version is released )
-    </p>
+    <p>Copy the pseudonym for use elsewere</p>
     <div>
       <div class="input-group mb-3">
         <input
