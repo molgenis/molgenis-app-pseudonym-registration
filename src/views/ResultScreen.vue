@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="result-screen">
     <p>
       Please use this pseudonym to ... ( please provide a nice text to explain
       what to do with the pseudonym, note that the generated id can look like

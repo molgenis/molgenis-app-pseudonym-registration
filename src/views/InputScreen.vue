@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="input-screen">
     <p>
       Enter the UMCG number to generate a pseudonym ... ( please provide a nice
       text to explain what can be done here )
