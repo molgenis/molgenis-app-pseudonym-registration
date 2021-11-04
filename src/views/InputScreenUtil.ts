@@ -32,7 +32,9 @@ export async function submitPseudonymRegistration(
 
 async function getPseudonym(originalId: string): Promise<string> {
   return await api
-    .get(`/api/data/PseudoId_PseudonymRegistration?q=OriginalId==${originalId}`)
+    .get(
+      `/api/data/PseudoId_PseudonymRegistration?q=OriginalId=="${originalId}"`
+    )
     .then((response: ApiResponse) => {
       return response.items.length ? response.items[0].data.id : '';
     })

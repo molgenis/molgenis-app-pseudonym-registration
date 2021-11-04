@@ -23,7 +23,7 @@
     <div v-if="isDuplicate" class="alert alert-warning" role="alert">
       <i class="fa fa-exclamation-triangle" />
       This pseudonym already existed in the database, you might want to check if
-      the patients data was already entered.
+      the patient's data was already entered.
     </div>
     <button class="btn btn-primary" @click="$emit('reset')">Back</button>
   </div>
