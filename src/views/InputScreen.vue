@@ -53,9 +53,10 @@ export default Vue.extend({
   },
   methods: {
     onInputChange(event: any): void {
-      this.inputError = validateInput(event.target.value);
-      this.localOriginalId = event?.target?.value;
-      this.$emit('update:orignalId', event?.target?.value);
+      const newInput = event.target.value;
+      this.inputError = validateInput(newInput);
+      this.localOriginalId = newInput;
+      this.$emit('update:orignalId', newInput);
     },
     onGenerate(newOrignalId: string): void {
       submitPseudonymRegistration(newOrignalId)
