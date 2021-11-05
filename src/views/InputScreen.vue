@@ -21,11 +21,11 @@
         </button>
       </div>
     </div>
-    <div>
+    <div v-if="inputError !== ''" class="alert alert-warning" role="alert">
       {{ inputError }}
     </div>
-    <div v-if="errorText !== ''" class="alert alert-warning" role="alert">
-      {{ errorText }}
+    <div v-if="generationError !== ''" class="alert alert-warning" role="alert">
+      {{ generationError }}
     </div>
   </div>
 </template>
@@ -41,12 +41,12 @@ export default Vue.extend({
     originalId: {type: String, required: true}
   },
   data: (): {
-    errorText: string;
+    generationError: string;
     inputError: string;
     localOriginalId: string;
   } => {
     return {
-      errorText: '',
+      generationError: '',
       inputError: '',
       localOriginalId: ''
     };
@@ -63,7 +63,7 @@ export default Vue.extend({
           this.$emit('receivedPseudonym', pseudonym, isDuplicate);
         })
         .catch((error: string): void => {
-          this.errorText = error;
+          this.generationError = error;
         });
     }
   }
