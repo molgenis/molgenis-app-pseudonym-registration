@@ -53,7 +53,7 @@ export default Vue.extend({
   },
   methods: {
     onInputChange(event: any): void {
-      const newInput = event.target.value;
+      const newInput: string = event.target.value;
       this.inputError = validateInput(newInput);
       this.localOriginalId = newInput;
       this.$emit('update:orignalId', newInput);
