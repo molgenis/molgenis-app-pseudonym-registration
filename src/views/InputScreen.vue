@@ -14,12 +14,15 @@
           id="pseudonym-generate-btn"
           class="btn btn-outline-primary"
           type="submit"
-          :disabled="localOriginalId === ''"
+          :disabled="localOriginalId === '' || inputError !== ''"
           v-on:click="onGenerate(originalId)"
         >
           Generate
         </button>
       </div>
+    </div>
+    <div>
+      {{ inputError }}
     </div>
     <div v-if="errorText !== ''" class="alert alert-warning" role="alert">
       {{ errorText }}
@@ -29,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {submitPseudonymRegistration} from './InputScreenUtil';
+import {submitPseudonymRegistration, validateInput} from './InputScreenUtil';
 import IPseudonymResult from './IPseudonymResult';
 
 export default Vue.extend({
@@ -37,14 +40,20 @@ export default Vue.extend({
   props: {
     originalId: {type: String, required: true}
   },
-  data: (): {errorText: string; localOriginalId: string} => {
+  data: (): {
+    errorText: string;
+    inputError: string;
+    localOriginalId: string;
+  } => {
     return {
       errorText: '',
+      inputError: '',
       localOriginalId: ''
     };
   },
   methods: {
     onInputChange(event: any): void {
+      this.inputError = validateInput(event.target.value);
       this.localOriginalId = event?.target?.value;
       this.$emit('update:orignalId', event?.target?.value);
     },

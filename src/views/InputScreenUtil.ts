@@ -70,3 +70,16 @@ function isApiResponse(
 ): response is ApiResponse {
   return (<ApiResponse>response).status !== undefined;
 }
+
+export function validateInput(input: string): string {
+  if (input === '') {
+    return 'Please enter an id.';
+  }
+  if (input.indexOf('"') !== -1) {
+    return 'Id cannot contain double quotes.';
+  }
+  if (input.indexOf('\\') !== -1) {
+    return 'Id cannot contain backslashes.';
+  }
+  return '';
+}

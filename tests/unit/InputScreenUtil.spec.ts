@@ -1,6 +1,7 @@
 import {
   ApiResponse,
-  submitPseudonymRegistration
+  submitPseudonymRegistration,
+  validateInput
 } from '@/views/InputScreenUtil';
 import IPseudonymResult from '@/views/IPseudonymResult';
 import api from '@molgenis/molgenis-api-client';
@@ -110,6 +111,32 @@ describe('InputScreenUtil', () => {
           done();
         }
       );
+    });
+  });
+
+  describe('validateInput', () => {
+    it('should return an empty string for valid input', () => {
+      const validInput = 'valid input';
+      expect(validateInput(validInput)).toEqual('');
+    });
+
+    it('should return an error message for input with double quotes', () => {
+      const doubleQuoteInput = '"invalid input"';
+      expect(validateInput(doubleQuoteInput)).toEqual(
+        'Id cannot contain double quotes.'
+      );
+    });
+
+    it('should return an error message for input with backslashes', () => {
+      const backslashInput = 'invalid\\input';
+      expect(validateInput(backslashInput)).toEqual(
+        'Id cannot contain backslashes.'
+      );
+    });
+
+    it('should return an error message for empty input', () => {
+      const emptyInput = '';
+      expect(validateInput(emptyInput)).toEqual('Please enter an id.');
     });
   });
 });
