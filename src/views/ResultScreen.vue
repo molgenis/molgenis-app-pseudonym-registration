@@ -1,6 +1,6 @@
 <template>
   <div id="result-screen">
-    <p>Copy the pseudonym for use elsewere</p>
+    <p>Copy the pseudonym for use elsewere.</p>
     <div>
       <div class="input-group mb-3">
         <input

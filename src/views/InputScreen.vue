@@ -1,7 +1,7 @@
 <template>
   <div id="input-screen">
     <p>Enter the original id to generate a pseudonym.</p>
-    <div class="input-group card-text">
+    <div class="input-group card-text mb-3">
       <input
         id="original-id-input"
         v-bind:value="localOriginalId"
@@ -22,10 +22,10 @@
       </div>
     </div>
     <div v-if="inputError !== ''" class="alert alert-warning" role="alert">
-      {{ inputError }}
+      <i class="fa fa-exclamation-triangle" /> {{ inputError }}
     </div>
     <div v-if="generationError !== ''" class="alert alert-warning" role="alert">
-      {{ generationError }}
+      <i class="fa fa-exclamation-triangle" /> {{ generationError }}
     </div>
   </div>
 </template>

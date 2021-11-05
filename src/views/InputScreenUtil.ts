@@ -5,7 +5,7 @@ import IPseudonymResult from './IPseudonymResult';
 export type ApiResponse = Response & {items: {data: {id: string}}[]};
 
 const INFORM_MESSAGE =
-  'If you think this is a bug, please inform us at https://github.com/molgenis/molgenis-app-pseudonym-registration/issues';
+  'If you think this is a bug, please inform us at: https://github.com/molgenis/molgenis-app-pseudonym-registration/issues';
 
 export async function submitPseudonymRegistration(
   originalId: string
