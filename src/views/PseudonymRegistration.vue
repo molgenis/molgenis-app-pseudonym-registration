@@ -6,7 +6,7 @@
         <InputScreen
           :originalId="originalId"
           @receivedPseudonym="setPseudonym"
-          @update:orignalId="updateOriginalId"
+          @update:originalId="updateOriginalId"
         />
       </div>
       <div v-else>

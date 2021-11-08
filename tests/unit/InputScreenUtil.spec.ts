@@ -60,7 +60,7 @@ describe('InputScreenUtil', () => {
       );
     });
 
-    it('should return an error the api fails to get', (done) => {
+    it('should return an error if the api fails to get', (done) => {
       api.get.mockRejectedValueOnce(errorResponse);
       submitPseudonymRegistration(originalId).catch(
         (error: IPseudonymResult) => {
@@ -70,7 +70,7 @@ describe('InputScreenUtil', () => {
       );
     });
 
-    it('should return an error the api fails process the post', (done) => {
+    it('should return an error if the api fails process the post', (done) => {
       api.get.mockResolvedValueOnce(getEmptyResponse);
       api.post.mockRejectedValueOnce({
         statusText: 'reason for error',
@@ -115,6 +115,9 @@ describe('InputScreenUtil', () => {
   });
 
   describe('validateInput', () => {
+    const SPECIAL_CHARACTER_WARNING =
+      'Id cannot contain these characters: # ^ " \\ & | { } [ ] `';
+
     it('should return an empty string for valid input', () => {
       const validInput = 'valid input';
       expect(validateInput(validInput)).toEqual('');
@@ -123,15 +126,58 @@ describe('InputScreenUtil', () => {
     it('should return an error message for input with double quotes', () => {
       const doubleQuoteInput = '"invalid input"';
       expect(validateInput(doubleQuoteInput)).toEqual(
-        'Id cannot contain double quotes.'
+        SPECIAL_CHARACTER_WARNING
       );
     });
 
     it('should return an error message for input with backslashes', () => {
       const backslashInput = 'invalid\\input';
-      expect(validateInput(backslashInput)).toEqual(
-        'Id cannot contain backslashes.'
-      );
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with &', () => {
+      const backslashInput = 'invalid&input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with |', () => {
+      const backslashInput = 'invalid|input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with {', () => {
+      const backslashInput = 'invalid{input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with }', () => {
+      const backslashInput = 'invalid}input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with [', () => {
+      const backslashInput = 'invalid[input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with ]', () => {
+      const backslashInput = 'invalid]input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with back ticks', () => {
+      const backslashInput = 'invalid`input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with #', () => {
+      const backslashInput = 'invalid#input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
+    });
+
+    it('should return an error message for input with ^', () => {
+      const backslashInput = 'invalid^input';
+      expect(validateInput(backslashInput)).toEqual(SPECIAL_CHARACTER_WARNING);
     });
 
     it('should return an error message for empty input', () => {

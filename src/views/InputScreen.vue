@@ -14,17 +14,17 @@
           id="pseudonym-generate-btn"
           class="btn btn-outline-primary"
           type="submit"
-          :disabled="localOriginalId === '' || inputError !== ''"
+          :disabled="isGenerateDisabled"
           v-on:click="onGenerate(originalId)"
         >
           Generate
         </button>
       </div>
     </div>
-    <div v-if="inputError !== ''" class="alert alert-warning" role="alert">
+    <div v-if="inputError" class="alert alert-warning" role="alert">
       <i class="fa fa-exclamation-triangle" /> {{ inputError }}
     </div>
-    <div v-if="generationError !== ''" class="alert alert-warning" role="alert">
+    <div v-if="generationError" class="alert alert-warning" role="alert">
       <i class="fa fa-exclamation-triangle" /> {{ generationError }}
     </div>
   </div>
@@ -40,26 +40,27 @@ export default Vue.extend({
   props: {
     originalId: {type: String, required: true}
   },
-  data: (): {
-    generationError: string;
-    inputError: string;
-    localOriginalId: string;
-  } => {
+  data: (): IInputScreenData => {
     return {
       generationError: '',
       inputError: '',
       localOriginalId: ''
     };
   },
+  computed: {
+    isGenerateDisabled(): boolean {
+      return !this.localOriginalId || Boolean(this.inputError);
+    }
+  },
   methods: {
     onInputChange(event: any): void {
       const newInput: string = event.target.value;
       this.inputError = validateInput(newInput);
       this.localOriginalId = newInput;
-      this.$emit('update:orignalId', newInput);
+      this.$emit('update:originalId', newInput);
     },
-    onGenerate(newOrignalId: string): void {
-      submitPseudonymRegistration(newOrignalId)
+    onGenerate(newOriginalId: string): void {
+      submitPseudonymRegistration(newOriginalId)
         .then(({pseudonym, isDuplicate}: IPseudonymResult): void => {
           this.$emit('receivedPseudonym', pseudonym, isDuplicate);
         })
@@ -69,4 +70,10 @@ export default Vue.extend({
     }
   }
 });
+
+interface IInputScreenData {
+  generationError: string;
+  inputError: string;
+  localOriginalId: string;
+}
 </script>

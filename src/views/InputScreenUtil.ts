@@ -7,7 +7,7 @@ export type ApiResponse = Response & {items: {data: {id: string}}[]};
 const INFORM_MESSAGE =
   'If you think this is a bug, please inform us at: https://github.com/molgenis/molgenis-app-pseudonym-registration/issues';
 
-export async function submitPseudonymRegistration(
+export function submitPseudonymRegistration(
   originalId: string
 ): Promise<IPseudonymResult> {
   return getPseudonym(originalId)
@@ -30,8 +30,8 @@ export async function submitPseudonymRegistration(
     });
 }
 
-async function getPseudonym(originalId: string): Promise<string> {
-  return await api
+function getPseudonym(originalId: string): Promise<string> {
+  return api
     .get(
       `/api/data/PseudoId_PseudonymRegistration?q=OriginalId=="${originalId}"`
     )
@@ -41,13 +41,13 @@ async function getPseudonym(originalId: string): Promise<string> {
     .catch(errorHandler);
 }
 
-async function createPseudonym(originalId: string) {
+function createPseudonym(originalId: string) {
   const postOptions = {body: JSON.stringify({OriginalId: originalId})};
-  return await api
+  return api
     .post(`/api/data/PseudoId_PseudonymRegistration`, postOptions)
-    .then(async (response: Response) => {
+    .then((response: Response) => {
       if (response.status === 201) {
-        return await getPseudonym(originalId);
+        return getPseudonym(originalId);
       } else {
         return Promise.reject(response);
       }
@@ -74,12 +74,21 @@ function isApiResponse(
 export function validateInput(input: string): string {
   if (input === '') {
     return 'Please enter an id.';
+  } else if (
+    input.indexOf('\\') !== -1 ||
+    input.indexOf('"') !== -1 ||
+    input.indexOf('&') !== -1 ||
+    input.indexOf('|') !== -1 ||
+    input.indexOf('{') !== -1 ||
+    input.indexOf('}') !== -1 ||
+    input.indexOf('[') !== -1 ||
+    input.indexOf(']') !== -1 ||
+    input.indexOf('`') !== -1 ||
+    input.indexOf('#') !== -1 ||
+    input.indexOf('^') !== -1
+  ) {
+    return 'Id cannot contain these characters: # ^ " \\ & | { } [ ] `';
+  } else {
+    return '';
   }
-  if (input.indexOf('"') !== -1) {
-    return 'Id cannot contain double quotes.';
-  }
-  if (input.indexOf('\\') !== -1) {
-    return 'Id cannot contain backslashes.';
-  }
-  return '';
 }
