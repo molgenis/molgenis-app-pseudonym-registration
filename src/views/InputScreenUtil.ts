@@ -1,101 +1,94 @@
 // @ts-ignore
 import api from '@molgenis/molgenis-api-client';
+import IPseudonymResult from './IPseudonymResult';
 
-interface PseudonymRegistrationConfig {
-  ID: string;
-  GeneratedTokenDescription: string;
-  GeneratedTokenName: string;
-  LinkEntityName: string;
-  FieldName: string;
+export type ApiResponse = Response & {items: {data: {id: string}}[]};
+
+const INFORM_MESSAGE =
+  'If you think this is a bug, please inform us at: https://github.com/molgenis/molgenis-app-pseudonym-registration/issues';
+
+export function submitPseudonymRegistration(
+  originalId: string
+): Promise<IPseudonymResult> {
+  return getPseudonym(originalId)
+    .then(async (pseudonym: string) => {
+      const isDuplicate = Boolean(pseudonym);
+      if (isDuplicate) {
+        return {
+          pseudonym,
+          isDuplicate
+        };
+      } else {
+        return {
+          pseudonym: await createPseudonym(originalId),
+          isDuplicate
+        };
+      }
+    })
+    .catch((error) => {
+      return Promise.reject(Object(error).toString());
+    });
 }
-type ApiResponse = Response & {items: any};
 
-const requestConfiguration = (
-  id: string
-): Promise<PseudonymRegistrationConfig> =>
-  api.get(`/api/v2/PseudonymRegistrationConfig?q=ID=like=${id}`);
+function getPseudonym(originalId: string): Promise<string> {
+  return api
+    .get(
+      `/api/data/PseudoId_PseudonymRegistration?q=OriginalId=="${originalId}"`
+    )
+    .then((response: ApiResponse) => {
+      return response.items.length ? response.items[0].data.id : '';
+    })
+    .catch(errorHandler);
+}
 
-const submitPseudonymRegistration = async (
-  config: PseudonymRegistrationConfig,
-  originalID: string
-): Promise<string> => {
-  let requestID: string = '';
-  const postOptions = {body: JSON.stringify({OriginalID: originalID})};
-  try {
-    await api.post(`/api/data/${config.LinkEntityName}`, postOptions).then(
-      async (response: ApiResponse) => {
-        if (response.status === 201) {
-          requestID = await getNewPseudonym(config, originalID);
-        } else {
-          throw new Error(`Unexpected status code ${response.status}`);
-        }
-      },
-      async (error: Response) => {
-        if (error.status === 400) {
-          await checkForDuplicateID(config, originalID);
-        } else {
-          throw new Error(
-            `${error.statusText} Please contact a system administrator`
-          );
-        }
+function createPseudonym(originalId: string) {
+  const postOptions = {body: JSON.stringify({OriginalId: originalId})};
+  return api
+    .post(`/api/data/PseudoId_PseudonymRegistration`, postOptions)
+    .then((response: Response) => {
+      if (response.status === 201) {
+        return getPseudonym(originalId);
+      } else {
+        return Promise.reject(response);
       }
+    })
+    .catch(errorHandler);
+}
+
+function errorHandler(error: ApiResponse | string): void {
+  if (isApiResponse(error)) {
+    throw new Error(
+      `${error.statusText} (statuscode: ${error.status}). ${INFORM_MESSAGE}`
     );
-  } catch (error: any) {
-    await Promise.reject(error.toString());
+  } else {
+    throw error;
   }
-  return requestID;
-};
+}
 
-const getNewPseudonym = async (
-  config: PseudonymRegistrationConfig,
-  originalID: string
-): Promise<string> => {
-  let newPseudonym: string = '';
-  await api
-    .get(
-      `/api/data/${config.LinkEntityName}?q=${config.FieldName}==${originalID}`
-    )
-    .then(
-      (response: ApiResponse) => {
-        newPseudonym = response.items[0].data.ID;
-      },
-      (error: ApiResponse) => {
-        throw new Error(
-          `${error.statusText} Please contact a system administrator`
-        );
-      }
-    );
-  return newPseudonym;
-};
+function isApiResponse(
+  response: ApiResponse | string
+): response is ApiResponse {
+  return (<ApiResponse>response).status !== undefined;
+}
 
-const checkForDuplicateID = async (
-  config: PseudonymRegistrationConfig,
-  originalID: string
-): Promise<void> => {
-  await api
-    .get(
-      `/api/data/${config.LinkEntityName}?q=${config.FieldName}==${originalID}`
-    )
-    .then(
-      (response: ApiResponse) => {
-        const preExistingId = response.items[0].data.ID;
-        if (preExistingId !== '') {
-          throw new Error(
-            `This record already exist with the id: ${preExistingId}`
-          );
-        } else {
-          throw new Error(`Please contact a system administrator`);
-        }
-      },
-      (error: ApiResponse) => {
-        throw new Error(
-          `${error.statusText} Please contact a system administrator`
-        );
-      }
-    );
-};
-
-export default {
-  requestConfiguration,
-  submitPseudonymRegistration
-};
+export function validateInput(input: string): string {
+  if (input === '') {
+    return 'Please enter an id.';
+  } else if (
+    input.indexOf('\\') !== -1 ||
+    input.indexOf('"') !== -1 ||
+    input.indexOf('&') !== -1 ||
+    input.indexOf('|') !== -1 ||
+    input.indexOf('{') !== -1 ||
+    input.indexOf('}') !== -1 ||
+    input.indexOf('[') !== -1 ||
+    input.indexOf(']') !== -1 ||
+    input.indexOf('`') !== -1 ||
+    input.indexOf('#') !== -1 ||
+    input.indexOf('^') !== -1
+  ) {
+    return 'Id cannot contain these characters: # ^ " \\ & | { } [ ] `';
+  } else {
+    return '';
+  }
+}

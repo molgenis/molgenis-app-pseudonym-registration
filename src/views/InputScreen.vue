@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <div class="input-group">
+  <div id="input-screen">
+    <p>Enter the original id to generate a pseudonym.</p>
+    <div class="input-group card-text mb-3">
       <input
-        id="OriginalIDInput"
-        v-model="originalID"
+        id="original-id-input"
+        v-bind:value="localOriginalId"
+        v-on:input="onInputChange"
         class="form-control"
         type="text"
       />
@@ -12,29 +14,66 @@
           id="pseudonym-generate-btn"
           class="btn btn-outline-primary"
           type="submit"
-          @click.prevent.stop="onGenerate"
+          :disabled="isGenerateDisabled"
+          v-on:click="onGenerate(originalId)"
         >
           Generate
         </button>
       </div>
     </div>
+    <div v-if="inputError" class="alert alert-warning" role="alert">
+      <i class="fa fa-exclamation-triangle" /> {{ inputError }}
+    </div>
+    <div v-if="generationError" class="alert alert-warning" role="alert">
+      <i class="fa fa-exclamation-triangle" /> {{ generationError }}
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import Vue from 'vue';
+import {submitPseudonymRegistration, validateInput} from './InputScreenUtil';
+import IPseudonymResult from './IPseudonymResult';
 
-export default defineComponent({
+export default Vue.extend({
   name: 'InputScreen',
-  data: (): {originalID: string} => {
+  props: {
+    originalId: {type: String, required: true}
+  },
+  data: (): IInputScreenData => {
     return {
-      originalID: ''
+      generationError: '',
+      inputError: '',
+      localOriginalId: ''
     };
   },
+  computed: {
+    isGenerateDisabled(): boolean {
+      return !this.localOriginalId || Boolean(this.inputError);
+    }
+  },
   methods: {
-    onGenerate() {
-      console.log(this.originalID);
+    onInputChange(event: any): void {
+      const newInput: string = event.target.value;
+      this.inputError = validateInput(newInput);
+      this.localOriginalId = newInput;
+      this.$emit('update:originalId', newInput);
+    },
+    onGenerate(newOriginalId: string): void {
+      submitPseudonymRegistration(newOriginalId)
+        .then(({pseudonym, isDuplicate}: IPseudonymResult): void => {
+          this.$emit('receivedPseudonym', pseudonym, isDuplicate);
+        })
+        .catch((error: string): void => {
+          this.generationError = error;
+        });
     }
   }
 });
+
+interface IInputScreenData {
+  generationError: string;
+  inputError: string;
+  localOriginalId: string;
+}
 </script>

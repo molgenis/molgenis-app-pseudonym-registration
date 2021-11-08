@@ -20,19 +20,19 @@ const devServer = {
     process.env.NODE_ENV !== 'development'
       ? undefined
       : {
-          '/login': {
-            target: PROXY_TARGET,
-            changeOrigin: true
-          },
-          '/api': {
-            target: PROXY_TARGET,
-            changeOrigin: true
-          },
-          '/logout': {
-            target: PROXY_TARGET,
-            changeOrigin: true
-          }
+        '/login': {
+          target: PROXY_TARGET,
+          changeOrigin: true
+        },
+        '/api': {
+          target: PROXY_TARGET,
+          changeOrigin: true
+        },
+        '/logout': {
+          target: PROXY_TARGET,
+          changeOrigin: true
         }
+      }
 };
 
 let apiDevServerProxyConf = {

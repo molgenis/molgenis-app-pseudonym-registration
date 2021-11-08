@@ -6,10 +6,10 @@
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "noImplicitAny": false, // work around vue slider ts issue
     "baseUrl": ".",
     "types": ["webpack-env", "jest"],
     "paths": {
@@ -22,7 +22,9 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "packages/**/*.ts",
+    "packages/**/*.vue"
   ],
   "exclude": ["node_modules"]
 }

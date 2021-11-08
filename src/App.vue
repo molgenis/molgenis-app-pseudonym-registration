@@ -5,10 +5,10 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import Vue from 'vue';
 import PseudonymRegistration from './views/PseudonymRegistration.vue';
 
-export default defineComponent({
+export default Vue.extend({
   name: 'App',
   components: {PseudonymRegistration}
 });
