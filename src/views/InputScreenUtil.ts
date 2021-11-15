@@ -1,8 +1,13 @@
 // @ts-ignore
 import api from '@molgenis/molgenis-api-client';
+import {entityPackage, pseudonymRegistrationEntity} from './ConfigManager';
 import IPseudonymResult from './IPseudonymResult';
 
 export type ApiResponse = Response & {items: {data: {id: string}}[]};
+
+const apiPath = `/api/data/${
+  entityPackage ? entityPackage + '_' : ''
+}${pseudonymRegistrationEntity}`;
 
 const INFORM_MESSAGE =
   'If you think this is a bug, please inform us at: https://github.com/molgenis/molgenis-app-pseudonym-registration/issues';
@@ -31,10 +36,9 @@ export function submitPseudonymRegistration(
 }
 
 function getPseudonym(originalId: string): Promise<string> {
+  const apiParameters = `?q=OriginalId=="${originalId}"`;
   return api
-    .get(
-      `/api/data/PseudoId_PseudonymRegistration?q=OriginalId=="${originalId}"`
-    )
+    .get(apiPath + apiParameters)
     .then((response: ApiResponse) => {
       return response.items.length ? response.items[0].data.id : '';
     })
@@ -44,7 +48,7 @@ function getPseudonym(originalId: string): Promise<string> {
 function createPseudonym(originalId: string) {
   const postOptions = {body: JSON.stringify({OriginalId: originalId})};
   return api
-    .post(`/api/data/PseudoId_PseudonymRegistration`, postOptions)
+    .post(apiPath, postOptions)
     .then((response: Response) => {
       if (response.status === 201) {
         return getPseudonym(originalId);

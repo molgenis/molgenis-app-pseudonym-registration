@@ -1,6 +1,8 @@
 <template>
   <div id="input-screen">
-    <p>Enter the original id to generate a pseudonym.</p>
+    <p>
+      {{ inputDescriptionText }}
+    </p>
     <div class="input-group card-text mb-3">
       <input
         id="original-id-input"
@@ -34,6 +36,7 @@
 import Vue from 'vue';
 import {submitPseudonymRegistration, validateInput} from './InputScreenUtil';
 import IPseudonymResult from './IPseudonymResult';
+import {inputDescription} from './ConfigManager';
 
 export default Vue.extend({
   name: 'InputScreen',
@@ -50,6 +53,11 @@ export default Vue.extend({
   computed: {
     isGenerateDisabled(): boolean {
       return !this.localOriginalId || Boolean(this.inputError);
+    },
+    inputDescriptionText(): string {
+      return inputDescription
+        ? inputDescription
+        : 'Enter the original id to generate a pseudonym.';
     }
   },
   methods: {
