@@ -1,4 +1,4 @@
-import ResultScreen from '@/views/ResultScreen.vue';
+import ResultScreen from '@/components/ResultScreen.vue';
 import {shallowMount} from '@vue/test-utils';
 import Vue from 'vue';
 

@@ -22,8 +22,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import InputScreen from './InputScreen.vue';
-import ResultScreen from './ResultScreen.vue';
+import InputScreen from '../components/InputDialog.vue';
+import ResultScreen from '../components/ResultDialog.vue';
 
 export default Vue.extend({
   name: 'PseudonymRegistration',

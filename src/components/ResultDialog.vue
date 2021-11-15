@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {resultDescription} from './ConfigManager';
+import {resultDescription} from '@/logic/ConfigManager';
 
 export default Vue.extend({
   name: 'ResultScreen',

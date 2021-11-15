@@ -34,9 +34,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {submitPseudonymRegistration, validateInput} from './InputScreenUtil';
-import IPseudonymResult from './IPseudonymResult';
-import {inputDescription} from './ConfigManager';
+import {
+  submitPseudonymRegistration,
+  validateInput
+} from '../logic/InputScreenUtil';
+import IPseudonymResult from '../logic/IPseudonymResult';
+import {inputDescription} from '../logic/ConfigManager';
 
 export default Vue.extend({
   name: 'InputScreen',
