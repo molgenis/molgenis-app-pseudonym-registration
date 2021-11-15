@@ -3,14 +3,14 @@
     <div class="card-header">Pseudonym Registration</div>
     <div class="card-body">
       <div v-if="pseudonym === ''">
-        <InputScreen
+        <InputDialog
           :originalId="originalId"
           @receivedPseudonym="setPseudonym"
           @update:originalId="updateOriginalId"
         />
       </div>
       <div v-else>
-        <ResultScreen
+        <ResultDialog
           :pseudonym="pseudonym"
           :is-duplicate="isDuplicate"
           @reset="reset"
@@ -22,12 +22,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import InputScreen from './InputScreen.vue';
-import ResultScreen from './ResultScreen.vue';
+import InputDialog from '../components/InputDialog.vue';
+import ResultDialog from '../components/ResultDialog.vue';
 
 export default Vue.extend({
   name: 'PseudonymRegistration',
-  components: {InputScreen, ResultScreen},
+  components: {InputDialog, ResultDialog},
   data(): {
     pseudonym: string;
     isDuplicate: boolean;

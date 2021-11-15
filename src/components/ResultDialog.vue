@@ -1,6 +1,6 @@
 <template>
   <div id="result-screen">
-    <p>Copy the pseudonym for use elsewere.</p>
+    <p>{{ resultDescriptionText }}</p>
     <div>
       <div class="input-group mb-3">
         <input
@@ -31,9 +31,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import {resultDescription} from '@/logic/ConfigManager';
 
 export default Vue.extend({
-  name: 'ResultScreen',
+  name: 'ResultDialog',
   props: {
     pseudonym: {type: String, required: true},
     isDuplicate: {type: Boolean, required: false}
@@ -42,6 +43,11 @@ export default Vue.extend({
     return {
       isOnClipboard: false
     };
+  },
+  computed: {
+    resultDescriptionText(): string {
+      return resultDescription;
+    }
   },
   methods: {
     sendToClipboard(pseudonym: string): void {

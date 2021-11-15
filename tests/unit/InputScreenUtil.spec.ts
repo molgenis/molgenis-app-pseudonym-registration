@@ -2,8 +2,8 @@ import {
   ApiResponse,
   submitPseudonymRegistration,
   validateInput
-} from '@/views/InputScreenUtil';
-import IPseudonymResult from '@/views/IPseudonymResult';
+} from '@/logic/InputScreenUtil';
+import IPseudonymResult from '@/logic/IPseudonymResult';
 import api from '@molgenis/molgenis-api-client';
 
 const newPseudonym = 'newPseudonymId';

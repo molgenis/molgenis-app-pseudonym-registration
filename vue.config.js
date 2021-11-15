@@ -20,19 +20,19 @@ const devServer = {
     process.env.NODE_ENV !== 'development'
       ? undefined
       : {
-        '/login': {
-          target: PROXY_TARGET,
-          changeOrigin: true
-        },
-        '/api': {
-          target: PROXY_TARGET,
-          changeOrigin: true
-        },
-        '/logout': {
-          target: PROXY_TARGET,
-          changeOrigin: true
+          '/login': {
+            target: PROXY_TARGET,
+            changeOrigin: true
+          },
+          '/api': {
+            target: PROXY_TARGET,
+            changeOrigin: true
+          },
+          '/logout': {
+            target: PROXY_TARGET,
+            changeOrigin: true
+          }
         }
-      }
 };
 
 let apiDevServerProxyConf = {
@@ -54,7 +54,11 @@ function configureWebpack(config) {
       apiDependency: 'v2',
       includeMenuAndFooter: true,
       runtimeOptions: {
-        language: 'en'
+        language: 'en',
+        pseudonymRegistrationEntity: 'PseudonymRegistration',
+        entityPackage: 'PseudoId',
+        inputDescription: 'Enter the original id to generate a pseudonym.',
+        resultDescription: 'Copy the pseudonym for use elsewhere.'
       }
     }),
     new ZipPlugin({
