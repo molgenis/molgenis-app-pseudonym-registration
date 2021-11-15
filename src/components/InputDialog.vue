@@ -42,7 +42,7 @@ import IPseudonymResult from '../logic/IPseudonymResult';
 import {inputDescription} from '../logic/ConfigManager';
 
 export default Vue.extend({
-  name: 'InputScreen',
+  name: 'InputDialog',
   props: {
     originalId: {type: String, required: true}
   },

@@ -3,7 +3,7 @@ import {mount} from '@vue/test-utils';
 import Vue from 'vue';
 
 describe('PseudonymRegistration', () => {
-  it('should switch from InputScreen to ResultScreen on receiving a pseudonym', () => {
+  it('should switch from InputDialog to ResultDialog on receiving a pseudonym', () => {
     const wrapper = mount(PseudonymRegistration);
     const vm = wrapper.vm as any;
     const newIsDuplicate = false;

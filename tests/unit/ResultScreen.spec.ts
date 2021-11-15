@@ -1,4 +1,4 @@
-import ResultScreen from '@/components/ResultScreen.vue';
+import ResultDialog from '@/components/ResultDialog.vue';
 import {shallowMount} from '@vue/test-utils';
 import Vue from 'vue';
 
@@ -9,9 +9,9 @@ Object.assign(navigator, {
   }
 });
 
-describe('ResultScreen', () => {
+describe('ResultDialog', () => {
   it('should send pseudonym to clipboard', () => {
-    const wrapper = shallowMount(ResultScreen, {
+    const wrapper = shallowMount(ResultDialog, {
       propsData: {
         pseudonym: 'Pseudonym'
       }

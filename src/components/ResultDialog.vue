@@ -34,7 +34,7 @@ import Vue from 'vue';
 import {resultDescription} from '@/logic/ConfigManager';
 
 export default Vue.extend({
-  name: 'ResultScreen',
+  name: 'ResultDialog',
   props: {
     pseudonym: {type: String, required: true},
     isDuplicate: {type: Boolean, required: false}
