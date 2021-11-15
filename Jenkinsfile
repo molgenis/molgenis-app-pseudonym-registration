@@ -14,7 +14,7 @@ pipeline {
           script {
             env.TUNNEL_IDENTIFIER = sh(script: 'echo ${GIT_COMMIT}-${BUILD_NUMBER}', returnStdout: true)
             env.GITHUB_TOKEN = sh(script: 'vault read -field=value secret/ops/token/github', returnStdout: true)
-            env.CODECOV_TOKEN = sh(script: 'vault read -field=molgenis-app-pseudonym-registration secret/ops/token/codecov', returnStdout: true)
+            env.CODECOV_TOKEN = sh(script: 'vault read -field=molgenis-app-biobank-explorer secret/ops/token/codecov', returnStdout: true)
             env.REGISTRY_CRED_USR = sh(script: 'vault read -field=username secret/ops/account/nexus', returnStdout: true)
             env.REGISTRY_CRED_PSW = sh(script: 'vault read -field=password secret/ops/account/nexus', returnStdout: true)
             env.NEXUS_AUTH = sh(script: 'vault read -field=base64 secret/ops/account/nexus', returnStdout: true)
