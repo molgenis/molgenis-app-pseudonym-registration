@@ -46,9 +46,7 @@ export default Vue.extend({
   },
   computed: {
     resultDescriptionText(): string {
-      return resultDescription
-        ? resultDescription
-        : 'Copy the pseudonym for use elsewere.';
+      return resultDescription;
     }
   },
   methods: {

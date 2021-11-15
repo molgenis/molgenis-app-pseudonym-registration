@@ -55,9 +55,7 @@ export default Vue.extend({
       return !this.localOriginalId || Boolean(this.inputError);
     },
     inputDescriptionText(): string {
-      return inputDescription
-        ? inputDescription
-        : 'Enter the original id to generate a pseudonym.';
+      return inputDescription;
     }
   },
   methods: {
