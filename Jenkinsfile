@@ -4,9 +4,6 @@ pipeline {
       inheritFrom 'node-fermium'
     }
   }
-  environment {
-    LOCAL_REPOSITORY = "${LOCAL_REGISTRY}/molgenis/molgenis-app-pseudonym-registration"
-  }
   stages {
     stage('Prepare') {
       steps {
