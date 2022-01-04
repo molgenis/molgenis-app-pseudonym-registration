@@ -20,7 +20,9 @@ In the 'Runtime Application configuration' you can set the following values.
 | inputDescription | Optionally you can provide text on the initial screen to help the user of the application |
 | resultDescription | Optionally you can provide text what to do with the generated pseudonym  |
 
-![example custom inputDescription](https://raw.githubusercontent.com/molgenis/molgenis-projects/master/Geneticlines/images/pseudo_app.png)
+| ![example custom inputDescription](https://raw.githubusercontent.com/molgenis/molgenis-projects/master/Geneticlines/images/pseudo_app.png) |
+|:--:| 
+| *example of a custom inputDescription* |
 
 5) To configure the look and feel of the generated id's you can set tags. [Find out more about tags](https://molgenis.gitbook.io/molgenis/data-management/guide-pseudonymisation)
 
